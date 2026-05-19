@@ -24,7 +24,7 @@
 
 Most AI coding setups are prompt packs. This is not.
 
-CODEX_GodMode_ON is a complete, installable runtime: **14 custom agents**, 10
+CODEX_GodMode_ON is a complete, installable runtime: **16 custom agents**, 10
 workflow skills, explicit quality gates, persistent state artifacts, and an
 orchestration model refined over two years of real-world use. Every design
 decision has been sharpened continuously — and for the past several months, a
@@ -83,13 +83,15 @@ Install once. Use everywhere.
 
 | Layer | What's installed |
 | --- | --- |
-| **Core agents** | `researcher`, `architect`, `api_guardian`, `builder`, `validator`, `tester`, `scribe`, `github_manager` — pinned to `gpt-5.5` / `high` |
-| **Department agents** | `runtime_platform`, `workflow_design`, `workspace_governance`, `quality_operations`, `docs_dx`, `ci_security_guardian` — pinned to `gpt-5.5` / `high` |
+| **Phase 1 agents** | `workspace_governance`, `task_classifier`, `preflight_runner`, `researcher` — configurable ingestion and discovery routing |
+| **Core agents** | `researcher`, `architect`, `api_guardian`, `builder`, `validator`, `tester`, `scribe`, `github_manager` — pinned by role complexity |
+| **Department agents** | `runtime_platform`, `workflow_design`, `workspace_governance`, `quality_operations`, `docs_dx`, `ci_security_guardian` — pinned by role complexity |
+| **Phase 1 tiers** | Tier 2: `gpt-5.4-mini` / `medium`; Tier 3: `gpt-5.4-nano` / `low` |
 | **Workflow skills** | `$godmode-workflow`, `$godmode-prototype`, `$godmode-debug`, `$godmode-review`, `$godmode-departments`, `$greenfield-bootstrap`, `$web-platforms`, `$apple-platforms`, `$flutter-dart`, `$release-manager` |
 | **Stack profiles** | SwiftUI / iOS, React / Next.js, Flutter / Dart, Review mode |
 | **Persistent artifacts** | `reports/`, `state/` — workflow history stays in the repo, not only in chat |
 
-14 agents. 10 skills. One global install. Any workspace.
+16 agents. 10 skills. One global install. Any workspace.
 
 ---
 
@@ -201,32 +203,42 @@ the skill layer is the durable runtime interface.
 
 ### Agents
 
-The GodMode runtime installs 14 custom agents globally.
+The GodMode runtime installs 16 custom agents globally.
+
+**Phase 1 agents** handle ingestion and discovery before implementation:
+
+| Step | Route | Model pin |
+| --- | --- | --- |
+| Inspect workspace shape and governance surface | `workspace_governance` | `gpt-5.4-mini` / `medium` |
+| Bootstrap missing repo-local governance | `$greenfield-bootstrap` skill | Tier 3 behavior |
+| Classify task and choose the smallest viable team | `task_classifier` | `gpt-5.4-mini` / `medium` |
+| Run preflight and initialize state | `preflight_runner` | `gpt-5.4-nano` / `low` |
+| Research source verification or repo discovery | `researcher` | `gpt-5.4-mini` / `medium` |
 
 **Core agents** handle the standard research → plan → build → validate loop:
 
-| Agent            | Role                                                    |
-| ---------------- | ------------------------------------------------------- |
-| `researcher`     | read-only source verification and repo discovery        |
-| `architect`      | read-only design and smallest viable change plan        |
-| `api_guardian`   | read-only API, schema, CLI, config, and contract review |
-| `builder`        | the single normal implementation writer                 |
-| `validator`      | structural, static, and consistency validation          |
-| `tester`         | focused executable checks and runtime verification      |
-| `scribe`         | docs and release notes after quality gates pass         |
-| `github_manager` | branch, PR, and release framing — no push by default    |
+| Agent            | Role                                                    | Model pin |
+| ---------------- | ------------------------------------------------------- | ---------- |
+| `researcher`     | read-only source verification and repo discovery        | `gpt-5.4-mini` / `medium` |
+| `architect`      | read-only design and smallest viable change plan        | `gpt-5.5` / `high` |
+| `api_guardian`   | read-only API, schema, CLI, config, and contract review | `gpt-5.4` / `high` |
+| `builder`        | the single normal implementation writer                 | `gpt-5.4-mini` / `medium` |
+| `validator`      | structural, static, and consistency validation          | `gpt-5.5` / `high` |
+| `tester`         | focused executable checks and runtime verification      | `gpt-5.5` / `high` |
+| `scribe`         | docs and release notes after quality gates pass         | `gpt-5.4-nano` / `low` |
+| `github_manager` | branch, PR, and release framing — no push by default    | `gpt-5.4-mini` / `medium` |
 
 **Department agents** activate only when the task crosses multiple ownership
 areas:
 
-| Agent                  | Use it for                                                          |
-| ---------------------- | ------------------------------------------------------------------- |
-| `runtime_platform`     | Codex runtime defaults, toolchain, sandbox, and environment         |
-| `workflow_design`      | workflow procedures, skill boundaries, and handoff design           |
-| `workspace_governance` | AGENTS layering, local repo rules, and release law                  |
-| `quality_operations`   | validation scope, install checks, and repeatable smoke paths        |
-| `docs_dx`              | README, setup docs, prompts, and contributor-facing clarity         |
-| `ci_security_guardian` | GitHub Actions, CODEOWNERS, pinned actions, and repository security |
+| Agent                  | Use it for                                                          | Model pin |
+| ---------------------- | ------------------------------------------------------------------- | ---------- |
+| `runtime_platform`     | Codex runtime defaults, toolchain, sandbox, and environment         | `gpt-5.5` / `high` |
+| `workflow_design`      | workflow procedures, skill boundaries, and handoff design           | `gpt-5.5` / `high` |
+| `workspace_governance` | workspace shape, AGENTS layering, local repo rules, and release law | `gpt-5.4-mini` / `medium` |
+| `quality_operations`   | validation scope, install checks, and repeatable smoke paths        | `gpt-5.5` / `high` |
+| `docs_dx`              | README, setup docs, prompts, and contributor-facing clarity         | `gpt-5.4-mini` / `medium` |
+| `ci_security_guardian` | GitHub Actions, CODEOWNERS, pinned actions, and repository security | `gpt-5.4` / `medium` |
 
 To use the installed agents, ask Codex directly to use or split work across
 those roles. In the CLI, `/agent` lets you switch between active agent threads

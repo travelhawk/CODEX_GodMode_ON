@@ -19,6 +19,7 @@ The goal is not to copy the Claude implementation blindly. The goal is to preser
 The repository now ships:
 
 - a global installer that publishes guidance, config, agents, and skills to the user's Codex home
+- two Phase 1-only agents for task classification and preflight/state setup
 - eight core role agents for the normal workflow
 - six optional department agents for large cross-domain work
 - ten reusable skills covering the normal workflow, prototype lane, debug lane, review lane, department routing, greenfield bootstrap, stack guidance, and release framing
@@ -26,6 +27,8 @@ The repository now ships:
 - package sources stored outside repo-local Codex discovery paths to avoid duplicate project and personal skills in this bootstrap repository
 
 The runtime is intentionally explicit. The main thread remains responsible for deciding when to use a specialist, when to wait for results, when to loop back, and when to stop for human approval.
+
+Phase 1 of the workflow is now configurable: `workspace_governance` inspects workspace shape and governance, `$greenfield-bootstrap` handles missing governance, `task_classifier` chooses the smallest viable team, `preflight_runner` runs deterministic setup and state initialization, and `researcher` handles deeper repo discovery.
 
 ## Stage 1: Research Codex orchestration capabilities
 
@@ -69,7 +72,7 @@ The current official Codex docs support the following design assumptions:
 - `AGENTS.md` remains the primary layered governance surface.
 - Skills are the right place for reusable procedures, not for every one-off idea.
 - `gpt-5.5` is the default model for main orchestration and deeper reasoning in this runtime.
-- packaged GodMode agents pin `gpt-5.5` with `high` reasoning so delegated roles do not silently downgrade; smaller models are only an explicit user override outside the packaged defaults.
+- Packaged GodMode agents pin model and reasoning effort in their source TOML manifests; Phase 1 keeps ingestion and classification on `gpt-5.4-mini` with `medium` reasoning and deterministic preflight utility work on `gpt-5.4-nano` with `low` reasoning.
 
 ## Core Architecture Direction
 
@@ -159,6 +162,8 @@ CEO/CTO Orchestrator (main thread, read-only)
 
 | Current role | Target place | Notes |
 | --- | --- | --- |
+| `task_classifier` | `Staff Office` | task classification and smallest-viable-team routing |
+| `preflight_runner` | `Staff Office` | deterministic preflight and workflow-state setup |
 | `researcher` | `Research Office` | read-only fact finding |
 | `architect` | `Architecture Office` | design, rollback, dependency planning |
 | `api_guardian` | `Contract Office` | contract and surface review |

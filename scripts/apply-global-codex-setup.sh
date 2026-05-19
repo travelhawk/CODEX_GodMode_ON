@@ -238,6 +238,8 @@ run_dynamic_runtime_checks() {
   local status_ref="$1"
   local source_path=""
   local agent_name=""
+  local source_model_line=""
+  local source_effort_line=""
   local skill_dir=""
   local skill_name=""
   local target_skill=""
@@ -247,9 +249,11 @@ run_dynamic_runtime_checks() {
     agent_name="$(basename "$source_path")"
     check_path "${target_agents_dir}/${agent_name}" "Global agent ${agent_name%.toml}" || printf -v "$status_ref" '1'
     if [[ -f "${target_agents_dir}/${agent_name}" ]]; then
+      source_model_line="$(grep -E '^model = ' "$source_path" | head -n 1)"
+      source_effort_line="$(grep -E '^model_reasoning_effort = ' "$source_path" | head -n 1)"
       check_contains "${target_agents_dir}/${agent_name}" "name = \"${agent_name%.toml}\"" "installed ${agent_name%.toml} agent name" || printf -v "$status_ref" '1'
-      check_contains "${target_agents_dir}/${agent_name}" 'model = "gpt-5.5"' "installed ${agent_name%.toml} agent model" || printf -v "$status_ref" '1'
-      check_contains "${target_agents_dir}/${agent_name}" 'model_reasoning_effort = "high"' "installed ${agent_name%.toml} agent reasoning" || printf -v "$status_ref" '1'
+      check_contains "${target_agents_dir}/${agent_name}" "$source_model_line" "installed ${agent_name%.toml} agent model" || printf -v "$status_ref" '1'
+      check_contains "${target_agents_dir}/${agent_name}" "$source_effort_line" "installed ${agent_name%.toml} agent reasoning" || printf -v "$status_ref" '1'
     fi
   done
 
@@ -260,6 +264,13 @@ run_dynamic_runtime_checks() {
     check_path "$target_skill" "Global skill ${skill_name}" || printf -v "$status_ref" '1'
     if [[ -f "$target_skill" ]]; then
       check_contains "$target_skill" "name: ${skill_name}" "installed ${skill_name} skill metadata" || printf -v "$status_ref" '1'
+      if [[ "$skill_name" == "godmode-workflow" ]]; then
+        check_contains "$target_skill" 'workspace_governance' "installed godmode-workflow phase 1 governance route" || printf -v "$status_ref" '1'
+        check_contains "$target_skill" 'task_classifier' "installed godmode-workflow phase 1 classifier route" || printf -v "$status_ref" '1'
+        check_contains "$target_skill" 'preflight_runner' "installed godmode-workflow phase 1 preflight route" || printf -v "$status_ref" '1'
+        check_contains "$target_skill" 'researcher' "installed godmode-workflow phase 1 research route" || printf -v "$status_ref" '1'
+        check_contains "$target_skill" '$greenfield-bootstrap' "installed godmode-workflow phase 1 bootstrap route" || printf -v "$status_ref" '1'
+      fi
     fi
   done
 }
@@ -289,6 +300,8 @@ run_check() {
   if [[ -f "$target_agents" ]]; then
     check_contains "$target_agents" "## Profile intents" "global AGENTS profile guidance" || status=1
     check_contains "$target_agents" "## Global workflow" "global AGENTS workflow guidance" || status=1
+    check_contains "$target_agents" "task_classifier" "global AGENTS task_classifier guidance" || status=1
+    check_contains "$target_agents" "preflight_runner" "global AGENTS preflight_runner guidance" || status=1
   fi
 
   if [[ "$status" -ne 0 ]]; then

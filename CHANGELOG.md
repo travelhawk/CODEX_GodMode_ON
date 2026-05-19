@@ -6,6 +6,12 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+### Changed
+
+- introduced configurable packaged agent model pins, including Phase 1 tiers for `gpt-5.4-mini` / `medium` and `gpt-5.4-nano` / `low`
+- updated local and global setup checks to validate installed agent model pins against the packaged agent manifests
+- added configurable Phase 1 routing for `$godmode-workflow` with new `task_classifier` and `preflight_runner` packaged agents
+
 ## [1.1.0] - 2026-05-12
 
 ### Added

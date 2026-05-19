@@ -122,13 +122,37 @@ if data["name"] != expected:
     print(f"name field '{data['name']}' does not match filename '{expected}'")
     sys.exit(1)
 
-if data["model"] != "gpt-5.5":
-    print(f"model must be gpt-5.5, found {data['model']!r}")
+expected_tiers = {
+    "api_guardian": ("gpt-5.4", "high"),
+    "architect": ("gpt-5.5", "high"),
+    "builder": ("gpt-5.4-mini", "medium"),
+    "ci_security_guardian": ("gpt-5.4", "medium"),
+    "docs_dx": ("gpt-5.4-mini", "medium"),
+    "github_manager": ("gpt-5.4-mini", "medium"),
+    "preflight_runner": ("gpt-5.4-nano", "low"),
+    "quality_operations": ("gpt-5.5", "high"),
+    "researcher": ("gpt-5.4-mini", "medium"),
+    "runtime_platform": ("gpt-5.5", "high"),
+    "scribe": ("gpt-5.4-nano", "low"),
+    "task_classifier": ("gpt-5.4-mini", "medium"),
+    "tester": ("gpt-5.5", "high"),
+    "validator": ("gpt-5.5", "high"),
+    "workflow_design": ("gpt-5.5", "high"),
+    "workspace_governance": ("gpt-5.4-mini", "medium"),
+}
+
+if expected not in expected_tiers:
+    print(f"missing expected model tier for agent {expected!r}")
     sys.exit(1)
 
-if data["model_reasoning_effort"] not in {"high", "xhigh"}:
+expected_model, expected_effort = expected_tiers[expected]
+if data["model"] != expected_model:
+    print(f"model must be {expected_model}, found {data['model']!r}")
+    sys.exit(1)
+
+if data["model_reasoning_effort"] != expected_effort:
     print(
-        "model_reasoning_effort must be high or xhigh, "
+        f"model_reasoning_effort must be {expected_effort}, "
         f"found {data['model_reasoning_effort']!r}"
     )
     sys.exit(1)
@@ -398,8 +422,10 @@ check_path "templates/global-codex/agents/architect.toml"
 check_path "templates/global-codex/agents/builder.toml"
 check_path "templates/global-codex/agents/ci_security_guardian.toml"
 check_path "templates/global-codex/agents/github_manager.toml"
+check_path "templates/global-codex/agents/preflight_runner.toml"
 check_path "templates/global-codex/agents/researcher.toml"
 check_path "templates/global-codex/agents/scribe.toml"
+check_path "templates/global-codex/agents/task_classifier.toml"
 check_path "templates/global-codex/agents/tester.toml"
 check_path "templates/global-codex/agents/validator.toml"
 check_path "templates/global-codex/agents/runtime_platform.toml"

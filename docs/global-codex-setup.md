@@ -104,7 +104,7 @@ git pull --ff-only origin main
 
 On Windows, use the PowerShell installer and `-Check` command instead of the shell script.
 
-The installer creates timestamped backups before replacing existing files or directories. After the upgrade, `~/.codex/agents/` should contain 14 agent manifests and `~/.agents/skills/` should contain the ten skills shipped by this repo.
+The installer creates timestamped backups before replacing existing files or directories. After the upgrade, `~/.codex/agents/` should contain 16 agent manifests and `~/.agents/skills/` should contain the ten skills shipped by this repo.
 
 If you maintain hand-edited personal guidance in `~/.codex/AGENTS.md` or `~/.codex/config.toml`, inspect the generated backup files and reapply personal edits intentionally.
 
@@ -199,6 +199,8 @@ After running the installer, the user-level runtime looks like this:
   config.toml
   agents/
     researcher.toml
+    task_classifier.toml
+    preflight_runner.toml
     architect.toml
     api_guardian.toml
     builder.toml
@@ -227,7 +229,9 @@ After running the installer, the user-level runtime looks like this:
     release-manager/
 ```
 
-The first eight agents remain the role-centric baseline. The department-oriented agents are optional additions for larger multi-domain runs and do not mean every task should fan out by default. Every packaged agent pins `model = "gpt-5.5"` and `model_reasoning_effort = "high"` so delegated roles do not silently downgrade to a smaller model.
+The first eight agents remain the role-centric baseline. The department-oriented agents are optional additions for larger multi-domain runs and do not mean every task should fan out by default.
+
+Packaged agents pin their model and reasoning effort in their source TOML manifests. Phase 1 uses `gpt-5.4-mini` / `medium` for ingestion and classification, and `gpt-5.4-nano` / `low` for deterministic preflight utility work.
 
 The matching skill split is:
 
@@ -241,29 +245,39 @@ That is the important UX boundary: users do not need this repository open in eve
 
 ## Runtime roles
 
-The 1.0 runtime installs these core agents:
+Phase 1 of `$godmode-workflow` uses these ingestion and discovery routes:
 
-| Agent | Purpose |
-| --- | --- |
-| `researcher` | read-only research, source verification, and repo discovery |
-| `architect` | read-only plan, boundary, and risk design |
-| `api_guardian` | read-only API, schema, CLI, config, and user-visible contract review |
-| `builder` | single normal implementation writer |
-| `validator` | read-heavy consistency, static, and structural validation |
-| `tester` | executable checks and focused runtime verification |
-| `scribe` | docs, changelog, and release-note work after gates pass |
-| `github_manager` | branch, PR, release, and governance framing |
+| Step | Route | Model pin | Purpose |
+| --- | --- | --- | --- |
+| 1 | `workspace_governance` | `gpt-5.4-mini` / `medium` | inspect workspace shape and governance surface |
+| 2 | `$greenfield-bootstrap` | Tier 3 behavior | bootstrap missing repo-local governance with the existing skill |
+| 3 | `task_classifier` | `gpt-5.4-mini` / `medium` | classify the task and choose the smallest viable team |
+| 4 | `preflight_runner` | `gpt-5.4-nano` / `low` | run preflight checks and initialize workflow state when needed |
+| 5 | `researcher` | `gpt-5.4-mini` / `medium` | verify sources or discover repository facts when more evidence is needed |
+
+The runtime installs these core agents:
+
+| Agent | Model pin | Purpose |
+| --- | --- | --- |
+| `researcher` | `gpt-5.4-mini` / `medium` | read-only research, source verification, and repo discovery |
+| `architect` | `gpt-5.5` / `high` | read-only plan, boundary, and risk design |
+| `api_guardian` | `gpt-5.4` / `high` | read-only API, schema, CLI, config, and user-visible contract review |
+| `builder` | `gpt-5.4-mini` / `medium` | single normal implementation writer |
+| `validator` | `gpt-5.5` / `high` | read-heavy consistency, static, and structural validation |
+| `tester` | `gpt-5.5` / `high` | executable checks and focused runtime verification |
+| `scribe` | `gpt-5.4-nano` / `low` | docs, changelog, and release-note work after gates pass |
+| `github_manager` | `gpt-5.4-mini` / `medium` | branch, PR, release, and governance framing |
 
 It also installs optional department agents for large cross-domain runs:
 
-| Agent | Purpose |
-| --- | --- |
-| `runtime_platform` | runtime defaults, sandboxing, tools, and environment concerns |
-| `workflow_design` | orchestration procedures, skill boundaries, and handoff artifacts |
-| `workspace_governance` | AGENTS layering, release law, and local project rules |
-| `quality_operations` | validation plans, install checks, smoke paths, and eval-oriented checks |
-| `docs_dx` | public docs, setup guidance, prompts, and developer experience |
-| `ci_security_guardian` | GitHub Actions, CODEOWNERS, pinned actions, and repository security posture |
+| Agent | Model pin | Purpose |
+| --- | --- | --- |
+| `runtime_platform` | `gpt-5.5` / `high` | runtime defaults, sandboxing, tools, and environment concerns |
+| `workflow_design` | `gpt-5.5` / `high` | orchestration procedures, skill boundaries, and handoff artifacts |
+| `workspace_governance` | `gpt-5.4-mini` / `medium` | workspace shape, AGENTS layering, release law, and local project rules |
+| `quality_operations` | `gpt-5.5` / `high` | validation plans, install checks, smoke paths, and eval-oriented checks |
+| `docs_dx` | `gpt-5.4-mini` / `medium` | public docs, setup guidance, prompts, and developer experience |
+| `ci_security_guardian` | `gpt-5.4` / `medium` | GitHub Actions, CODEOWNERS, pinned actions, and repository security posture |
 
 Department agents are advisory lanes. They do not replace the default `researcher` -> `architect` -> `builder` -> `validator` and `tester` route.
 

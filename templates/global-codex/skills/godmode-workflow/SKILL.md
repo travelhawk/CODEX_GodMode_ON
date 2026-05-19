@@ -39,10 +39,10 @@ Pair this skill with:
 
 ## Default route
 
-1. inspect workspace shape and governance surface
-2. if the workspace is greenfield or missing repo-local governance, bootstrap it first
-3. classify the task and choose the smallest viable team
-4. run preflight and initialize state
+1. use `workspace_governance` to inspect workspace shape and governance surface
+2. if the workspace is greenfield or missing repo-local governance, invoke `$greenfield-bootstrap`
+3. use `task_classifier` to classify the task and choose the smallest viable team
+4. use `preflight_runner` to run preflight and initialize state when durable state is needed
 5. use `researcher` when source verification or repo discovery is still needed
 6. use `architect` to define the smallest viable change
 7. use `api_guardian` when contract surfaces change
@@ -62,7 +62,15 @@ Pair this skill with:
 - `docs_dx`
 - `ci_security_guardian`
 
-Ask for them explicitly and treat them as advisory lanes; they do not replace the default route.
+Ask for department agents explicitly and treat them as advisory lanes; they do not replace the default route.
+
+## Phase 1 agents
+
+- `workspace_governance` handles workspace shape and governance-surface inspection.
+- `$greenfield-bootstrap` handles missing repo-local governance as a skill, not a duplicate agent.
+- `task_classifier` handles task classification and smallest-viable-team routing.
+- `preflight_runner` handles deterministic preflight checks and workflow-state initialization.
+- `researcher` handles source verification and repo discovery when more evidence is needed.
 
 ## Outputs
 

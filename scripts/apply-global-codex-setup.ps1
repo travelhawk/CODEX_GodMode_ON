@@ -251,9 +251,11 @@ function Run-DynamicRuntimeChecks {
     $targetAgentPath = Join-Path $script:targetAgentsDir $sourceAgentFile.Name
     if (-not (Check-Path $targetAgentPath "Global agent $agentName")) { $Status.Value = 1 }
     if (Test-Path -LiteralPath $targetAgentPath -PathType Leaf) {
+      $sourceModelLine = (Select-String -LiteralPath $sourceAgentFile.FullName -Pattern '^model = ' | Select-Object -First 1).Line
+      $sourceEffortLine = (Select-String -LiteralPath $sourceAgentFile.FullName -Pattern '^model_reasoning_effort = ' | Select-Object -First 1).Line
       if (-not (Check-Contains $targetAgentPath "name = ""$agentName""" "installed $agentName agent name")) { $Status.Value = 1 }
-      if (-not (Check-Contains $targetAgentPath 'model = "gpt-5.5"' "installed $agentName agent model")) { $Status.Value = 1 }
-      if (-not (Check-Contains $targetAgentPath 'model_reasoning_effort = "high"' "installed $agentName agent reasoning")) { $Status.Value = 1 }
+      if (-not (Check-Contains $targetAgentPath $sourceModelLine "installed $agentName agent model")) { $Status.Value = 1 }
+      if (-not (Check-Contains $targetAgentPath $sourceEffortLine "installed $agentName agent reasoning")) { $Status.Value = 1 }
     }
   }
 
@@ -264,6 +266,13 @@ function Run-DynamicRuntimeChecks {
     if (-not (Check-Path $targetSkillPath "Global skill $skillName")) { $Status.Value = 1 }
     if (Test-Path -LiteralPath $targetSkillPath -PathType Leaf) {
       if (-not (Check-Contains $targetSkillPath "name: $skillName" "installed $skillName skill metadata")) { $Status.Value = 1 }
+      if ($skillName -eq 'godmode-workflow') {
+        if (-not (Check-Contains $targetSkillPath 'workspace_governance' 'installed godmode-workflow phase 1 governance route')) { $Status.Value = 1 }
+        if (-not (Check-Contains $targetSkillPath 'task_classifier' 'installed godmode-workflow phase 1 classifier route')) { $Status.Value = 1 }
+        if (-not (Check-Contains $targetSkillPath 'preflight_runner' 'installed godmode-workflow phase 1 preflight route')) { $Status.Value = 1 }
+        if (-not (Check-Contains $targetSkillPath 'researcher' 'installed godmode-workflow phase 1 research route')) { $Status.Value = 1 }
+        if (-not (Check-Contains $targetSkillPath '$greenfield-bootstrap' 'installed godmode-workflow phase 1 bootstrap route')) { $Status.Value = 1 }
+      }
     }
   }
 }
@@ -293,6 +302,8 @@ function Run-Check {
   if (Test-Path -LiteralPath $script:targetAgents -PathType Leaf) {
     if (-not (Check-Contains $script:targetAgents '## Profile intents' 'global AGENTS profile guidance')) { $status = 1 }
     if (-not (Check-Contains $script:targetAgents '## Global workflow' 'global AGENTS workflow guidance')) { $status = 1 }
+    if (-not (Check-Contains $script:targetAgents 'task_classifier' 'global AGENTS task_classifier guidance')) { $status = 1 }
+    if (-not (Check-Contains $script:targetAgents 'preflight_runner' 'global AGENTS preflight_runner guidance')) { $status = 1 }
   }
 
   if ($status -ne 0) {

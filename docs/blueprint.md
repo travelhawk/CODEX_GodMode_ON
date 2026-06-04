@@ -72,7 +72,7 @@ The current official Codex docs support the following design assumptions:
 - `AGENTS.md` remains the primary layered governance surface.
 - Skills are the right place for reusable procedures, not for every one-off idea.
 - `gpt-5.5` is the default model for main orchestration and deeper reasoning in this runtime.
-- Packaged GodMode agents pin model and reasoning effort in their source TOML manifests; Phase 1 keeps ingestion and classification on `gpt-5.4-mini` with `medium` reasoning and deterministic preflight utility work on `gpt-5.4-nano` with `low` reasoning.
+- Packaged GodMode agents pin model and reasoning effort in their source TOML manifests; classification and implementation use `gpt-5.5` with `high` reasoning, while most utility, governance, validation, and advisory roles use `gpt-5.4` or `gpt-5.4-mini` with `medium` reasoning.
 
 ## Core Architecture Direction
 

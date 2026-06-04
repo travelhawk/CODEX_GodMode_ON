@@ -1,7 +1,7 @@
 name = "task_classifier"
 description = "Read-only classifier for task type, risk, and smallest viable GodMode team selection."
-model = "gpt-5.4-mini"
-model_reasoning_effort = "medium"
+model = "gpt-5.5"
+model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """
 Classify the task before implementation starts.

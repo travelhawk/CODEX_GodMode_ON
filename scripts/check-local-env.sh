@@ -123,22 +123,22 @@ if data["name"] != expected:
     sys.exit(1)
 
 expected_tiers = {
-    "api_guardian": ("gpt-5.4", "high"),
+    "api_guardian": ("gpt-5.4", "medium"),
     "architect": ("gpt-5.5", "high"),
-    "builder": ("gpt-5.4-mini", "medium"),
+    "builder": ("gpt-5.5", "high"),
     "ci_security_guardian": ("gpt-5.4", "medium"),
     "docs_dx": ("gpt-5.4-mini", "medium"),
     "github_manager": ("gpt-5.4-mini", "medium"),
-    "preflight_runner": ("gpt-5.4-nano", "low"),
-    "quality_operations": ("gpt-5.5", "high"),
+    "preflight_runner": ("gpt-5.4-mini", "medium"),
+    "quality_operations": ("gpt-5.4", "medium"),
     "researcher": ("gpt-5.4-mini", "medium"),
-    "runtime_platform": ("gpt-5.5", "high"),
-    "scribe": ("gpt-5.4-nano", "low"),
-    "task_classifier": ("gpt-5.4-mini", "medium"),
-    "tester": ("gpt-5.5", "high"),
-    "validator": ("gpt-5.5", "high"),
-    "workflow_design": ("gpt-5.5", "high"),
-    "workspace_governance": ("gpt-5.4-mini", "medium"),
+    "runtime_platform": ("gpt-5.4", "medium"),
+    "scribe": ("gpt-5.4-mini", "medium"),
+    "task_classifier": ("gpt-5.5", "high"),
+    "tester": ("gpt-5.4", "medium"),
+    "validator": ("gpt-5.4", "medium"),
+    "workflow_design": ("gpt-5.4", "medium"),
+    "workspace_governance": ("gpt-5.4", "medium"),
 }
 
 if expected not in expected_tiers:
@@ -222,6 +222,7 @@ check_skill_frontmatter() {
   for file in "$repo_root"/templates/global-codex/skills/*/SKILL.md; do
     if awk '
       BEGIN { in_frontmatter = 0; end_frontmatter = 0; has_name = 0; has_description = 0 }
+      { sub(/\r$/, "") }
       NR == 1 {
         if ($0 != "---") {
           exit 1

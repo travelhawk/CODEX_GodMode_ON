@@ -1,7 +1,7 @@
 name = "preflight_runner"
 description = "Workspace-write utility agent for deterministic preflight checks and workflow-state initialization."
-model = "gpt-5.4-nano"
-model_reasoning_effort = "low"
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 developer_instructions = """
 Run deterministic preflight setup before implementation starts.

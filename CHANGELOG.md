@@ -8,9 +8,10 @@ The format is based on Keep a Changelog.
 
 ### Changed
 
-- introduced configurable packaged agent model pins, including Phase 1 tiers for `gpt-5.4-mini` / `medium` and `gpt-5.4-nano` / `low`
+- introduced configurable packaged agent model pins with the source TOML manifests as the authority
 - updated local and global setup checks to validate installed agent model pins against the packaged agent manifests
 - added configurable Phase 1 routing for `$godmode-workflow` with new `task_classifier` and `preflight_runner` packaged agents
+- realigned packaged agent model pins so classification and implementation use `gpt-5.5` / `high`, while most utility, governance, validation, and advisory roles use `gpt-5.4*` / `medium`
 
 ## [1.1.0] - 2026-05-12
 

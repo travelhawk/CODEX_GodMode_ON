@@ -42,7 +42,17 @@ This is the loop closing. The runtime is stable. It's yours for free.
 
 ## What's New
 
-The latest release adds **prototype mode** on top of the production workflow:
+The current runtime refresh updates **agent model routing** so each packaged
+role carries the model and reasoning effort that matches its job:
+
+- `builder` and `task_classifier` now use `gpt-5.5` / `high`
+- governance, preflight, scribe, quality, platform, workflow, validation, and
+  testing utility roles now use `gpt-5.4` or `gpt-5.4-mini` with `medium`
+  reasoning
+- the README, setup docs, registry, and local validation script track the
+  source TOML manifests as the authority
+
+The 1.1 release added **prototype mode** on top of the production workflow:
 
 **`$godmode-prototype`** — a local-only fast lane for rapid spikes and
 throwaway proof-of-concepts. It skips production gates, forces `PROTOTYPE ONLY`
@@ -86,7 +96,7 @@ Install once. Use everywhere.
 | **Phase 1 agents** | `workspace_governance`, `task_classifier`, `preflight_runner`, `researcher` — configurable ingestion and discovery routing |
 | **Core agents** | `researcher`, `architect`, `api_guardian`, `builder`, `validator`, `tester`, `scribe`, `github_manager` — pinned by role complexity |
 | **Department agents** | `runtime_platform`, `workflow_design`, `workspace_governance`, `quality_operations`, `docs_dx`, `ci_security_guardian` — pinned by role complexity |
-| **Phase 1 tiers** | Tier 2: `gpt-5.4-mini` / `medium`; Tier 3: `gpt-5.4-nano` / `low` |
+| **Routing pins** | `gpt-5.5` / `high` for classification and implementation; `gpt-5.4*` / `medium` for most utility, governance, validation, and advisory roles |
 | **Workflow skills** | `$godmode-workflow`, `$godmode-prototype`, `$godmode-debug`, `$godmode-review`, `$godmode-departments`, `$greenfield-bootstrap`, `$web-platforms`, `$apple-platforms`, `$flutter-dart`, `$release-manager` |
 | **Stack profiles** | SwiftUI / iOS, React / Next.js, Flutter / Dart, Review mode |
 | **Persistent artifacts** | `reports/`, `state/` — workflow history stays in the repo, not only in chat |
@@ -209,10 +219,10 @@ The GodMode runtime installs 16 custom agents globally.
 
 | Step | Route | Model pin |
 | --- | --- | --- |
-| Inspect workspace shape and governance surface | `workspace_governance` | `gpt-5.4-mini` / `medium` |
+| Inspect workspace shape and governance surface | `workspace_governance` | `gpt-5.4` / `medium` |
 | Bootstrap missing repo-local governance | `$greenfield-bootstrap` skill | Tier 3 behavior |
-| Classify task and choose the smallest viable team | `task_classifier` | `gpt-5.4-mini` / `medium` |
-| Run preflight and initialize state | `preflight_runner` | `gpt-5.4-nano` / `low` |
+| Classify task and choose the smallest viable team | `task_classifier` | `gpt-5.5` / `high` |
+| Run preflight and initialize state | `preflight_runner` | `gpt-5.4-mini` / `medium` |
 | Research source verification or repo discovery | `researcher` | `gpt-5.4-mini` / `medium` |
 
 **Core agents** handle the standard research → plan → build → validate loop:
@@ -221,11 +231,11 @@ The GodMode runtime installs 16 custom agents globally.
 | ---------------- | ------------------------------------------------------- | ---------- |
 | `researcher`     | read-only source verification and repo discovery        | `gpt-5.4-mini` / `medium` |
 | `architect`      | read-only design and smallest viable change plan        | `gpt-5.5` / `high` |
-| `api_guardian`   | read-only API, schema, CLI, config, and contract review | `gpt-5.4` / `high` |
-| `builder`        | the single normal implementation writer                 | `gpt-5.4-mini` / `medium` |
-| `validator`      | structural, static, and consistency validation          | `gpt-5.5` / `high` |
-| `tester`         | focused executable checks and runtime verification      | `gpt-5.5` / `high` |
-| `scribe`         | docs and release notes after quality gates pass         | `gpt-5.4-nano` / `low` |
+| `api_guardian`   | read-only API, schema, CLI, config, and contract review | `gpt-5.4` / `medium` |
+| `builder`        | the single normal implementation writer                 | `gpt-5.5` / `high` |
+| `validator`      | structural, static, and consistency validation          | `gpt-5.4` / `medium` |
+| `tester`         | focused executable checks and runtime verification      | `gpt-5.4` / `medium` |
+| `scribe`         | docs and release notes after quality gates pass         | `gpt-5.4-mini` / `medium` |
 | `github_manager` | branch, PR, and release framing — no push by default    | `gpt-5.4-mini` / `medium` |
 
 **Department agents** activate only when the task crosses multiple ownership
@@ -233,10 +243,10 @@ areas:
 
 | Agent                  | Use it for                                                          | Model pin |
 | ---------------------- | ------------------------------------------------------------------- | ---------- |
-| `runtime_platform`     | Codex runtime defaults, toolchain, sandbox, and environment         | `gpt-5.5` / `high` |
-| `workflow_design`      | workflow procedures, skill boundaries, and handoff design           | `gpt-5.5` / `high` |
-| `workspace_governance` | workspace shape, AGENTS layering, local repo rules, and release law | `gpt-5.4-mini` / `medium` |
-| `quality_operations`   | validation scope, install checks, and repeatable smoke paths        | `gpt-5.5` / `high` |
+| `runtime_platform`     | Codex runtime defaults, toolchain, sandbox, and environment         | `gpt-5.4` / `medium` |
+| `workflow_design`      | workflow procedures, skill boundaries, and handoff design           | `gpt-5.4` / `medium` |
+| `workspace_governance` | workspace shape, AGENTS layering, local repo rules, and release law | `gpt-5.4` / `medium` |
+| `quality_operations`   | validation scope, install checks, and repeatable smoke paths        | `gpt-5.4` / `medium` |
 | `docs_dx`              | README, setup docs, prompts, and contributor-facing clarity         | `gpt-5.4-mini` / `medium` |
 | `ci_security_guardian` | GitHub Actions, CODEOWNERS, pinned actions, and repository security | `gpt-5.4` / `medium` |
 

@@ -231,7 +231,7 @@ After running the installer, the user-level runtime looks like this:
 
 The first eight agents remain the role-centric baseline. The department-oriented agents are optional additions for larger multi-domain runs and do not mean every task should fan out by default.
 
-Packaged agents pin their model and reasoning effort in their source TOML manifests. Phase 1 uses `gpt-5.4-mini` / `medium` for ingestion and classification, and `gpt-5.4-nano` / `low` for deterministic preflight utility work.
+Packaged agents pin their model and reasoning effort in their source TOML manifests. Classification and implementation run on `gpt-5.5` / `high`; most governance, utility, validation, and advisory roles run on `gpt-5.4` or `gpt-5.4-mini` with `medium` reasoning.
 
 The matching skill split is:
 
@@ -249,10 +249,10 @@ Phase 1 of `$godmode-workflow` uses these ingestion and discovery routes:
 
 | Step | Route | Model pin | Purpose |
 | --- | --- | --- | --- |
-| 1 | `workspace_governance` | `gpt-5.4-mini` / `medium` | inspect workspace shape and governance surface |
+| 1 | `workspace_governance` | `gpt-5.4` / `medium` | inspect workspace shape and governance surface |
 | 2 | `$greenfield-bootstrap` | Tier 3 behavior | bootstrap missing repo-local governance with the existing skill |
-| 3 | `task_classifier` | `gpt-5.4-mini` / `medium` | classify the task and choose the smallest viable team |
-| 4 | `preflight_runner` | `gpt-5.4-nano` / `low` | run preflight checks and initialize workflow state when needed |
+| 3 | `task_classifier` | `gpt-5.5` / `high` | classify the task and choose the smallest viable team |
+| 4 | `preflight_runner` | `gpt-5.4-mini` / `medium` | run preflight checks and initialize workflow state when needed |
 | 5 | `researcher` | `gpt-5.4-mini` / `medium` | verify sources or discover repository facts when more evidence is needed |
 
 The runtime installs these core agents:
@@ -261,21 +261,21 @@ The runtime installs these core agents:
 | --- | --- | --- |
 | `researcher` | `gpt-5.4-mini` / `medium` | read-only research, source verification, and repo discovery |
 | `architect` | `gpt-5.5` / `high` | read-only plan, boundary, and risk design |
-| `api_guardian` | `gpt-5.4` / `high` | read-only API, schema, CLI, config, and user-visible contract review |
-| `builder` | `gpt-5.4-mini` / `medium` | single normal implementation writer |
-| `validator` | `gpt-5.5` / `high` | read-heavy consistency, static, and structural validation |
-| `tester` | `gpt-5.5` / `high` | executable checks and focused runtime verification |
-| `scribe` | `gpt-5.4-nano` / `low` | docs, changelog, and release-note work after gates pass |
+| `api_guardian` | `gpt-5.4` / `medium` | read-only API, schema, CLI, config, and user-visible contract review |
+| `builder` | `gpt-5.5` / `high` | single normal implementation writer |
+| `validator` | `gpt-5.4` / `medium` | read-heavy consistency, static, and structural validation |
+| `tester` | `gpt-5.4` / `medium` | executable checks and focused runtime verification |
+| `scribe` | `gpt-5.4-mini` / `medium` | docs, changelog, and release-note work after gates pass |
 | `github_manager` | `gpt-5.4-mini` / `medium` | branch, PR, release, and governance framing |
 
 It also installs optional department agents for large cross-domain runs:
 
 | Agent | Model pin | Purpose |
 | --- | --- | --- |
-| `runtime_platform` | `gpt-5.5` / `high` | runtime defaults, sandboxing, tools, and environment concerns |
-| `workflow_design` | `gpt-5.5` / `high` | orchestration procedures, skill boundaries, and handoff artifacts |
-| `workspace_governance` | `gpt-5.4-mini` / `medium` | workspace shape, AGENTS layering, release law, and local project rules |
-| `quality_operations` | `gpt-5.5` / `high` | validation plans, install checks, smoke paths, and eval-oriented checks |
+| `runtime_platform` | `gpt-5.4` / `medium` | runtime defaults, sandboxing, tools, and environment concerns |
+| `workflow_design` | `gpt-5.4` / `medium` | orchestration procedures, skill boundaries, and handoff artifacts |
+| `workspace_governance` | `gpt-5.4` / `medium` | workspace shape, AGENTS layering, release law, and local project rules |
+| `quality_operations` | `gpt-5.4` / `medium` | validation plans, install checks, smoke paths, and eval-oriented checks |
 | `docs_dx` | `gpt-5.4-mini` / `medium` | public docs, setup guidance, prompts, and developer experience |
 | `ci_security_guardian` | `gpt-5.4` / `medium` | GitHub Actions, CODEOWNERS, pinned actions, and repository security posture |
 

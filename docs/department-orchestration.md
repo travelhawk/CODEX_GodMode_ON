@@ -16,10 +16,10 @@ Use it with `$godmode-workflow` and `$godmode-departments` only when the normal 
 
 | Department | Agent | Model pin | Scope |
 | --- | --- | --- | --- |
-| Runtime Platform | `runtime_platform` | `gpt-5.5` / `high` | Codex runtime defaults, toolchains, sandboxing, local-vs-cloud behavior, and environment issues |
-| Workflow Design | `workflow_design` | `gpt-5.5` / `high` | skill boundaries, routing, handoffs, prompts, reports, and state conventions |
-| Workspace Governance | `workspace_governance` | `gpt-5.4-mini` / `medium` | workspace shape, AGENTS layering, branch policy, release law, repo rules, and local project constitutions |
-| Quality Operations | `quality_operations` | `gpt-5.5` / `high` | validation strategy, smoke paths, installer checks, and eval-style checks |
+| Runtime Platform | `runtime_platform` | `gpt-5.4` / `medium` | Codex runtime defaults, toolchains, sandboxing, local-vs-cloud behavior, and environment issues |
+| Workflow Design | `workflow_design` | `gpt-5.4` / `medium` | skill boundaries, routing, handoffs, prompts, reports, and state conventions |
+| Workspace Governance | `workspace_governance` | `gpt-5.4` / `medium` | workspace shape, AGENTS layering, branch policy, release law, repo rules, and local project constitutions |
+| Quality Operations | `quality_operations` | `gpt-5.4` / `medium` | validation strategy, smoke paths, installer checks, and eval-style checks |
 | Docs & Developer Experience | `docs_dx` | `gpt-5.4-mini` / `medium` | README, setup docs, prompts, and contributor-facing clarity |
 | CI & Security | `ci_security_guardian` | `gpt-5.4` / `medium` | GitHub Actions, CODEOWNERS, Dependabot, pinned actions, permissions, and repository protection |
 
